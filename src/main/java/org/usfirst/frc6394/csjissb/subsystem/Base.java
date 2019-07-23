@@ -58,7 +58,7 @@ public class Base extends Subsystem {
         configVelocityPID();
 
         rightSlaveMotor.follow(rightMasterMotor);
-        leftSlaveMotor.follow(leftSlaveMotor);
+        leftSlaveMotor.follow(leftMasterMotor);
 
     }
 
@@ -290,10 +290,10 @@ public class Base extends Subsystem {
     }
 
     public void configVelocityPID(){
-        robotMap.setMotorPID(leftMasterMotor, 0.245, 0, 0, 0);
-        robotMap.setMotorPID(leftSlaveMotor, 0.245, 0, 0, 0);
-        robotMap.setMotorPID(rightMasterMotor, 0.197, 0.05, 0, 0);
-        robotMap.setMotorPID(rightSlaveMotor, 0.197, 0.05, 0, 0);
+        robotMap.setMotorPID(leftMasterMotor, 0.225, 0.05, 0, 0);
+        robotMap.setMotorPID(leftSlaveMotor, 0.225, 0.05, 0, 0);
+        robotMap.setMotorPID(rightMasterMotor, 0.225, 0.1, 0, 0);
+        robotMap.setMotorPID(rightSlaveMotor, 0.225, 0.1, 0, 0);
 
         leftMasterMotor.configClosedLoopPeakOutput(0, 1);
         leftSlaveMotor.configClosedLoopPeakOutput(0, 1);
