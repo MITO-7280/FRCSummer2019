@@ -1,14 +1,12 @@
-
 package org.usfirst.frc6394.csjissb.commands;
 
 import org.usfirst.frc6394.csjissb.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ChangeDirection extends Command {
+public class NormalDrive extends Command {
 
-    public ChangeDirection(){
+    public NormalDrive(){
         requires(Robot.base);
     }
 
@@ -18,7 +16,7 @@ public class ChangeDirection extends Command {
 
     @Override
     protected void execute(){
-        Robot.base.changeDirection();
+       Robot.base.reinverseDrive();
     }
 
     @Override
@@ -27,11 +25,10 @@ public class ChangeDirection extends Command {
     }
 
     @Override
-    protected void end() {
+    protected void end(){
     }
-
+    
     @Override
     protected void interrupted(){
-        end();
     }
 }

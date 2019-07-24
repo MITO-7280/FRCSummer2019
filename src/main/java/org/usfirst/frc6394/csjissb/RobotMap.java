@@ -19,26 +19,27 @@ public class RobotMap {
 
     public RobotMap(){
     }
-    public void TalonSRXInt (TalonSRX _talon, double _peakOutput){
-
-        _talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.kPIDLoopIdx,
-                Constants.kTimeoutMs);
-
+    public void TalonSRXInit(TalonSRX _talon, double _peakOutput) {
+    
+		// set up TalonSRX and closed loop
+        // select an encoder and set it
+        _talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+    
         _talon.configFactoryDefault();
- 
-        _talon.setSensorPhase(true);
-        
-            _talon.configNominalOutputForward(0, Constants.kTimeoutMs);
-            _talon.configNominalOutputReverse(0, Constants.kTimeoutMs);
-            _talon.configPeakOutputForward(1, Constants.kTimeoutMs);
-            _talon.configPeakOutputForward(-1, Constants.kTimeoutMs);
+        // make sure the sensor gieves the postive value whent the output is positive. 
+		_talon.setSensorPhase(true);
+
+		_talon.configNominalOutputForward(0, Constants.kTimeoutMs);
+		_talon.configNominalOutputReverse(0, Constants.kTimeoutMs);
+		_talon.configPeakOutputForward(1, Constants.kTimeoutMs);
+		_talon.configPeakOutputReverse(-1, Constants.kTimeoutMs);
 
         _talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-
+    
         _talon.configAllowableClosedloopError(1, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
-
+    
         _talon.configClosedLoopPeakOutput(Constants.kSlotIdx, _peakOutput, Constants.kTimeoutMs);
-    }
+  }
 
     public void setMotorPID(TalonSRX _talon, double kF, double kP, double kI, double kD){
         _talon.config_kF(Constants.kSlotIdx, kF, Constants.kTimeoutMs);

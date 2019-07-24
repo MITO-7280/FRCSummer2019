@@ -15,11 +15,8 @@ package org.usfirst.frc6394.csjissb;
 
 import org.usfirst.frc6394.csjissb.commands.*;
 
-import edu.wpi.first.wpilibj.GamepadBase;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
-
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -63,7 +60,11 @@ public class OI {
 
     public JoystickButton take;
     public JoystickButton turn180;
-    public JoystickButton changeDirection;
+    public JoystickButton turnLeft90;
+    public JoystickButton turnRight90;
+    public JoystickButton turnLeft45;
+    public JoystickButton turnRight45;
+    public JoystickButton goForward;
 
 
     public OI() {
@@ -72,10 +73,20 @@ public class OI {
         functionStick = new Joystick(0);
 
         turn180 = new JoystickButton(motionStick, 1);
-        changeDirection = new JoystickButton(motionStick, 2);
+        turnLeft90 = new JoystickButton(motionStick, 2);
+        turnRight90 = new JoystickButton(motionStick, 3);
+        turnLeft45 = new JoystickButton(motionStick, 4);
+        turnRight45 = new JoystickButton(motionStick, 5);
+        goForward = new JoystickButton(motionStick, 6);
 
-        turn180.whenPressed(new Turn180(5000));
-        changeDirection.whenPressed(new ChangeDirection());
+        turn180.whenPressed(new TurnLeft(180));
+        turnLeft90.whenPressed(new TurnLeft(90));
+        turnRight90.whenPressed(new TurnRight(90));
+        turnLeft45.whenPressed(new TurnLeft(60));
+        turnRight45.whenPressed(new TurnLeft(30));
+        goForward.whenPressed(new GoForward(67));
+
+
        // changeDirection.whenPressed(new ChangeDirection());
 
         // SmartDashboard Buttons

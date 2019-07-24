@@ -43,15 +43,15 @@ public class Base extends Subsystem {
 
     public boolean visionTurnOK = false;
     public boolean visionDriveOK = false;
-    public boolean inverseDrive = false;
+    boolean inverseDrive;
 
 
     public Base() {
 
-        robotMap.TalonSRXInt(leftMasterMotor, Constants.kBasePeakOutput);
-        robotMap.TalonSRXInt(rightMasterMotor, Constants.kBasePeakOutput);
-        robotMap.TalonSRXInt(leftSlaveMotor, Constants.kBasePeakOutput);
-        robotMap.TalonSRXInt(rightSlaveMotor,Constants.kBasePeakOutput);
+        robotMap.TalonSRXInit(leftMasterMotor, Constants.kBasePeakOutput);
+        robotMap.TalonSRXInit(rightMasterMotor, Constants.kBasePeakOutput);
+        robotMap.TalonSRXInit(leftSlaveMotor, Constants.kBasePeakOutput);
+        robotMap.TalonSRXInit(rightSlaveMotor, Constants.kBasePeakOutput);
 
         
 
@@ -59,6 +59,9 @@ public class Base extends Subsystem {
 
         rightSlaveMotor.follow(rightMasterMotor);
         leftSlaveMotor.follow(leftMasterMotor);
+
+        leftMasterMotor.setInverted(true);
+        leftSlaveMotor.setInverted(true);
 
     }
 
@@ -77,57 +80,14 @@ public class Base extends Subsystem {
     public void drive(double twistValue, double throttleValue, double xValue){
         motorMode(NeutralMode.Coast);
         configVelocityPID();
-        if (inverseDrive = false){
-            if (twistValue - throttleValue <= 0){
-            leftSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
-            rightSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
+        
+            if (throttleValue - twistValue < 0){
+            rightSpeed = (throttleValue - twistValue + xValue) * Constants.kBaseSpeed;
+            leftSpeed = (throttleValue - twistValue - xValue) * Constants.kBaseSpeed;
             } else {
-            leftSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
-            rightSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
+            leftSpeed = (throttleValue - twistValue - xValue) * Constants.kBaseSpeed;
+            rightSpeed = (throttleValue - twistValue + xValue) * Constants.kBaseSpeed;
             }
-            if (leftSpeed <= 0){
-                leftMasterMotor.setInverted(false);
-                leftSlaveMotor.setInverted(false);
-            } else {
-                leftSpeed = - leftSpeed;
-                leftMasterMotor.setInverted(true);
-                leftSlaveMotor.setInverted(true);
-            }
-            if (rightSpeed <= 0){
-                rightMasterMotor.setInverted(true);
-                rightSlaveMotor.setInverted(true);
-            } else {
-                rightSpeed = - rightSpeed;
-                rightMasterMotor.setInverted(false);
-                rightSlaveMotor.setInverted(false);
-            }
-        } else {
-            if (twistValue - throttleValue <= 0){
-            leftSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
-            rightSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
-            } else {
-            leftSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
-            rightSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
-            }
-            if (leftSpeed <= 0){
-                leftMasterMotor.setInverted(true);
-                leftSlaveMotor.setInverted(true);
-            } else {
-                leftSpeed = - leftSpeed;
-                leftMasterMotor.setInverted(false);
-                leftSlaveMotor.setInverted(false);
-            }
-            if (rightSpeed <= 0){
-                rightMasterMotor.setInverted(false);
-                rightSlaveMotor.setInverted(false);
-            } else {
-                rightSpeed = - rightSpeed;
-                rightMasterMotor.setInverted(true);
-                rightSlaveMotor.setInverted(true);
-            }
-        }
-
-
         
         speedDrive();
 
@@ -234,35 +194,34 @@ public class Base extends Subsystem {
         showData();
     }
 
-    public void TurnLeft(int _distance){
+    public void turnLeft(int _distance){
         targetDistanceX = _distance;
+        configPositionPID();
         motorMode(NeutralMode.Brake);
 
         leftMasterMotor.set(ControlMode.Position, _distance);
-        leftSlaveMotor.set(ControlMode.Position, _distance);
-        rightMasterMotor.set(ControlMode.Position, _distance);
-        rightSlaveMotor.set(ControlMode.Position, _distance);
+        rightMasterMotor.set(ControlMode.Position, -_distance);
 
         showData();
     }
 
     public void turn180(int _distance){
         configPositionPID();
+        motorMode(NeutralMode.Brake);
 
-        leftMasterMotor.set(ControlMode.Position, -_distance);
+        leftMasterMotor.set(ControlMode.Position, _distance);
         rightMasterMotor.set(ControlMode.Position, -_distance);
 
 
     }
 
-    public void TurnRight(int _distance){
+    public void turnRight(int _distance){
         targetDistanceX = _distance;
+        configPositionPID();
         motorMode(NeutralMode.Brake);
 
-        leftMasterMotor.set(ControlMode.Position, _distance);
-        leftSlaveMotor.set(ControlMode.Position, _distance);
+        leftMasterMotor.set(ControlMode.Position, -_distance);
         rightMasterMotor.set(ControlMode.Position, _distance);
-        rightSlaveMotor.set(ControlMode.Position, _distance);
 
         showData();
     }
@@ -292,8 +251,12 @@ public class Base extends Subsystem {
 
     }
 
-    public int getCurrentDistance() {
+    public int getRightCurrentDistance() {
         return rightMasterMotor.getSelectedSensorPosition();
+    }
+
+    public int getLeftCurrentDistance(){
+        return leftMasterMotor.getSelectedSensorPosition();
     }
 
     //function that set the encoder position to zero
@@ -318,8 +281,8 @@ public class Base extends Subsystem {
     }
 
     public void configVelocityPID(){
-        robotMap.setMotorPID(leftMasterMotor, 0.225, 0.05, 0, 0);
-        robotMap.setMotorPID(leftSlaveMotor, 0.225, 0.05, 0, 0);
+        robotMap.setMotorPID(leftMasterMotor, 0.225, 0.1, 0, 0);
+        robotMap.setMotorPID(leftSlaveMotor, 0.225, 0.1, 0, 0);
         robotMap.setMotorPID(rightMasterMotor, 0.225, 0.1, 0, 0);
         robotMap.setMotorPID(rightSlaveMotor, 0.225, 0.1, 0, 0);
 
@@ -330,8 +293,10 @@ public class Base extends Subsystem {
     }
 
     public void configPositionPID(){
-        robotMap.setMotorPID(leftMasterMotor, 0, 0.05, 0, 0.5);
-        robotMap.setMotorPID(rightMasterMotor, 0, 0.1, 0, 1);
+        robotMap.setMotorPID(leftMasterMotor, 0, 0.21, 0, 0.1);
+        robotMap.setMotorPID(rightMasterMotor, 0, 0.21, 0, 0.1);
+        robotMap.setMotorPID(leftSlaveMotor, 0, 0.21, 0, 0.1);
+        robotMap.setMotorPID(rightSlaveMotor, 0, 0.21, 0, 0.1);
 
         leftMasterMotor.configClosedLoopPeakOutput(0, 0.5);
         leftSlaveMotor.configClosedLoopPeakOutput(0, 0.5);
@@ -356,12 +321,22 @@ public class Base extends Subsystem {
         SmartDashboard.getBoolean("inverse", Robot.oi.motionStick.getRawButtonPressed(2));
     }
 
-    public void changeDirection(){
-        if (inverseDrive = false){
-            inverseDrive = true;
-        } else {
-            inverseDrive = false;
-        }
+    public void inverseDrive(){
+        inverseDrive = false;
+    }
+
+    public void reinverseDrive(){
+        inverseDrive = true;
+    }
+
+    public void goForward(int _distance){
+        motorMode(NeutralMode.Brake);
+        configPositionPID();
+
+        //forward is negative, backward is positive
+        //84.5 (position) = 1 cm
+        rightMasterMotor.set(ControlMode.Position, -_distance);
+        leftMasterMotor.set(ControlMode.Position, -_distance);
     }
 
 
