@@ -63,6 +63,7 @@ public class OI {
 
     public JoystickButton take;
     public JoystickButton turn180;
+    public JoystickButton changeDirection;
 
 
     public OI() {
@@ -71,8 +72,11 @@ public class OI {
         functionStick = new Joystick(0);
 
         turn180 = new JoystickButton(motionStick, 1);
+        changeDirection = new JoystickButton(motionStick, 2);
 
-
+        turn180.whenPressed(new Turn180(5000));
+        changeDirection.whenPressed(new ChangeDirection());
+       // changeDirection.whenPressed(new ChangeDirection());
 
         // SmartDashboard Buttons
 

@@ -43,7 +43,7 @@ public class Base extends Subsystem {
 
     public boolean visionTurnOK = false;
     public boolean visionDriveOK = false;
-    public boolean tableOn = false;
+    public boolean inverseDrive = false;
 
 
     public Base() {
@@ -77,30 +77,56 @@ public class Base extends Subsystem {
     public void drive(double twistValue, double throttleValue, double xValue){
         motorMode(NeutralMode.Coast);
         configVelocityPID();
-
-        if (twistValue - throttleValue <= 0){
+        if (inverseDrive = false){
+            if (twistValue - throttleValue <= 0){
             leftSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
             rightSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
-        } else {
+            } else {
             leftSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
             rightSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
-        }
-        if (leftSpeed <= 0){
-            leftMasterMotor.setInverted(true);
-            leftSlaveMotor.setInverted(true);
+            }
+            if (leftSpeed <= 0){
+                leftMasterMotor.setInverted(false);
+                leftSlaveMotor.setInverted(false);
+            } else {
+                leftSpeed = - leftSpeed;
+                leftMasterMotor.setInverted(true);
+                leftSlaveMotor.setInverted(true);
+            }
+            if (rightSpeed <= 0){
+                rightMasterMotor.setInverted(true);
+                rightSlaveMotor.setInverted(true);
+            } else {
+                rightSpeed = - rightSpeed;
+                rightMasterMotor.setInverted(false);
+                rightSlaveMotor.setInverted(false);
+            }
         } else {
-            leftSpeed = - leftSpeed;
-            leftMasterMotor.setInverted(false);
-            leftSlaveMotor.setInverted(false);
+            if (twistValue - throttleValue <= 0){
+            leftSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
+            rightSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
+            } else {
+            leftSpeed = (twistValue - throttleValue + xValue) * Constants.kBaseSpeed;
+            rightSpeed = (twistValue - throttleValue - xValue) * Constants.kBaseSpeed;
+            }
+            if (leftSpeed <= 0){
+                leftMasterMotor.setInverted(true);
+                leftSlaveMotor.setInverted(true);
+            } else {
+                leftSpeed = - leftSpeed;
+                leftMasterMotor.setInverted(false);
+                leftSlaveMotor.setInverted(false);
+            }
+            if (rightSpeed <= 0){
+                rightMasterMotor.setInverted(false);
+                rightSlaveMotor.setInverted(false);
+            } else {
+                rightSpeed = - rightSpeed;
+                rightMasterMotor.setInverted(true);
+                rightSlaveMotor.setInverted(true);
+            }
         }
-        if (rightSpeed <= 0){
-            rightMasterMotor.setInverted(false);
-            rightSlaveMotor.setInverted(false);
-        } else {
-            rightSpeed = - rightSpeed;
-            rightMasterMotor.setInverted(true);
-            rightSlaveMotor.setInverted(true);
-        }
+
 
         
         speedDrive();
@@ -220,11 +246,13 @@ public class Base extends Subsystem {
         showData();
     }
 
-    public void turn180(){
-        leftMasterMotor.set(ControlMode.Position, Constants.turn180);
-        rightMasterMotor.set(ControlMode.Position, Constants.turn180);
-
+    public void turn180(int _distance){
         configPositionPID();
+
+        leftMasterMotor.set(ControlMode.Position, -_distance);
+        rightMasterMotor.set(ControlMode.Position, -_distance);
+
+
     }
 
     public void TurnRight(int _distance){
@@ -325,7 +353,17 @@ public class Base extends Subsystem {
         SmartDashboard.putNumber("Z value", Robot.oi.motionStick.getTwist() - Robot.oi.motionStick.getThrottle());
         SmartDashboard.getBoolean("left inverted", leftMasterMotor.getInverted());
         SmartDashboard.getBoolean("right inverted", rightMasterMotor.getInverted());
+        SmartDashboard.getBoolean("inverse", Robot.oi.motionStick.getRawButtonPressed(2));
     }
+
+    public void changeDirection(){
+        if (inverseDrive = false){
+            inverseDrive = true;
+        } else {
+            inverseDrive = false;
+        }
+    }
+
 
 }
 

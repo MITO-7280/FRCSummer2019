@@ -6,32 +6,24 @@ import org.usfirst.frc6394.csjissb.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Turn180 extends Command {
-    int targetDistance;
-    public Turn180(int _distance){
+public class ChangeDirection extends Command {
+
+    public ChangeDirection(){
         requires(Robot.base);
-        targetDistance = _distance;
     }
 
     @Override
     protected void initialize(){
-        Robot.base.zeroSensorPosition();
-        Robot.base.configPositionPID();
     }
 
     @Override
     protected void execute(){
-        Robot.base.turn180(targetDistance);
-        Robot.base.showData();
+        Robot.base.changeDirection();
     }
 
     @Override
     protected boolean isFinished(){
-        if (Robot.base.getCurrentDistance() - targetDistance < 500){
-            return false;
-        }   else {
-            return true;
-        }
+        return true;
     }
 
     @Override
@@ -41,6 +33,5 @@ public class Turn180 extends Command {
     @Override
     protected void interrupted(){
         end();
-        Robot.base.configVelocityPID();
     }
 }
