@@ -3,11 +3,12 @@ package org.usfirst.frc6394.csjissb.commands;
 import org.usfirst.frc6394.csjissb.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class InverseDrive extends Command {
 
     public InverseDrive(){
-        requires(Robot.base);
+        requires(Robot.judge);
     }
 
     @Override
@@ -16,12 +17,12 @@ public class InverseDrive extends Command {
 
     @Override
     protected void execute(){
-       Robot.base.inverseDrive();
+        Robot.judge.judgeDriveType();
     }
 
     @Override
     protected boolean isFinished(){
-        return true;
+        return false;
     }
 
     @Override

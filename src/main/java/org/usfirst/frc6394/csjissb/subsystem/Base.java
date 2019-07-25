@@ -43,7 +43,7 @@ public class Base extends Subsystem {
 
     public boolean visionTurnOK = false;
     public boolean visionDriveOK = false;
-    boolean inverseDrive;
+    public boolean tableOn = false;
 
 
     public Base() {
@@ -93,7 +93,7 @@ public class Base extends Subsystem {
 
         showData();
     }
-/*
+
     public double visionTurn() {
         tableOn = true;
         double zSpeed = 0;
@@ -123,7 +123,7 @@ public class Base extends Subsystem {
 
         return zSpeed;
     }
-
+/*
     public double[] visionDrive() {
         tableOn = true;
         double[] yxSpeed = {0,0};
@@ -194,13 +194,13 @@ public class Base extends Subsystem {
         showData();
     }
 
-    public void turnLeft(int _distance){
-        targetDistanceX = _distance;
+    public void turnLeft(int _angle){
+        targetDistanceX = _angle;
         configPositionPID();
         motorMode(NeutralMode.Brake);
 
-        leftMasterMotor.set(ControlMode.Position, _distance);
-        rightMasterMotor.set(ControlMode.Position, -_distance);
+        leftMasterMotor.set(ControlMode.Position, 45 * _angle + 420);
+        rightMasterMotor.set(ControlMode.Position, -45 * _angle + 420);
 
         showData();
     }
@@ -215,13 +215,13 @@ public class Base extends Subsystem {
 
     }
 
-    public void turnRight(int _distance){
-        targetDistanceX = _distance;
+    public void turnRight(int _angle){
+        targetDistanceX = _angle;
         configPositionPID();
         motorMode(NeutralMode.Brake);
 
-        leftMasterMotor.set(ControlMode.Position, -_distance);
-        rightMasterMotor.set(ControlMode.Position, _distance);
+        leftMasterMotor.set(ControlMode.Position, -45 * _angle + 420);
+        rightMasterMotor.set(ControlMode.Position, 45 * _angle + 420);
 
         showData();
     }
@@ -321,13 +321,15 @@ public class Base extends Subsystem {
         SmartDashboard.getBoolean("inverse", Robot.oi.motionStick.getRawButtonPressed(2));
     }
 
-    public void inverseDrive(){
-        inverseDrive = false;
-    }
+    // public void InverseDrive(){
+    //     inverseDrive = true;
+    // }
 
-    public void reinverseDrive(){
-        inverseDrive = true;
-    }
+    // public void NormalDrive(){
+    //     inverseDrive = false;
+    // }
+
+
 
     public void goForward(int _distance){
         motorMode(NeutralMode.Brake);

@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnRight extends Command {
     int targetDistance;
+    int targetAngle;
     public TurnRight(int _angle){
         requires(Robot.base);
         targetDistance = 45 * _angle + 420;
+        targetAngle = _angle;
         SmartDashboard.putNumber("distance", targetDistance);
     }
 
@@ -22,7 +24,7 @@ public class TurnRight extends Command {
 
     @Override
     protected void execute(){
-        Robot.base.turnRight(targetDistance);
+        Robot.base.turnRight(targetAngle);
         Robot.base.showData();
     }
 

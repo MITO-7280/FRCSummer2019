@@ -7,9 +7,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnLeft extends Command {
+    int targetAngle;
     int targetDistance;
     public TurnLeft(int _angle){
         requires(Robot.base);
+        targetAngle = _angle;
         targetDistance = 45 * _angle + 420;
         SmartDashboard.putNumber("distance", targetDistance);
     }
@@ -22,7 +24,7 @@ public class TurnLeft extends Command {
 
     @Override
     protected void execute(){
-        Robot.base.turnLeft(targetDistance);
+        Robot.base.turnLeft(targetAngle);
         Robot.base.showData();
     }
 
